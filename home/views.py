@@ -7,15 +7,18 @@ from django.utils.translation import gettext_lazy as _
 from django.core.files.base import ContentFile
 from django.core.files.storage import FileSystemStorage
 from django.http import HttpResponse
+from .models import uba
 import csv
 # Create your views here.
 def EnggIndia(request):
+    info= uba.objects.all()
+    #print (info)
     # coal = ProjectDetails.objects.all()
     #enggdata=uba.objects.all()
    # print(enggdata)
    # context = {'enggdata':enggdata}
     # context = {'wells': wells, 'mylist':mylist}
-    return render(request, 'home/villages.html')
+    return render(request, 'home/villages.html',{'info': info})
 
 
 def engineering_colleges(request):
