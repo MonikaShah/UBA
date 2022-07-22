@@ -1,13 +1,93 @@
 {% extends 'home/base_map.html'%}
 
-
+{% load static %}
 {% block map %}
-<div id="mapid" style="width: 100%; height: 100%;"></div>
-<div id="sidebar" style="width: 100%; height: 100%;"></div>
 
+<div id="mapid" style="width: 100%; height: 100%;"></div>
+<div id="sidebar" style="width: 100%; height: 100%;">
+  <div class="form-group col-md-5 multiselect">
+  <label for="inputRegion">Region Name</label>
+  <select class="form-control" id="inputRegion" name="region"  style="display: block;">
+                      <option value="SelectState">Select Region</option>
+                      <option value="Amravati">Amravati</option>
+                      <option value="Aurangabad">Aurangabad</option>
+                      <option value="Mumbai">Mumbai</option>
+                      <option value="Nagpur">Nagpur</option>
+                      <option value="Pune">Pune</option>
+                      <option value="Nashik">Nashik</option>
+                      <!-- {% for i in region %}
+                      <option value="{{i.regionname}}">{{i.regionname}}</option>
+                      {% endfor %} -->
+                    </select>
+                    </div>
+                    <div class="form-group col-md-4 multiselect">
+                      <label for="inputDistrict">District</label>
+                      <select class="form-control" id="inputDistrict" name="district"  style="display: block;">
+                                          <option value="choose">Select District</option>
+                                          <!-- <option value="Raigad">Raigad</option>
+                                          <option value="Ratnagiri">Ratnagiri</option>
+                                          <option value="Sindhudurg">Sindhudurg</option>
+                                          <option value="mumbai_suburb">Mumbai Suburban District</option>
+                                          <option value="Mumbai City">Mumbai City</option>
+                                          <option value="Thane"> Thane</option>
+                                          <option value="Palghar">Palghar</option>
+                                          <option value="Nashik">Nashik</option>
+                                          <option value="Jalgaon">Jalgaon</option>
+                                          <option value="Buldhana">Buldhana</option>
+                                          <option value="Akola">Akola</option>
+                                          <option value="Washim">Washim</option>
+                                          <option value="Amravati">Amravati</option>
+                                          <option value="Wardha">Wardha</option>
+                                          <option value="Nagpur">Nagpur</option>
+                                          <option value="Bhandara">Bhandara</option>
+                                          <option value="Gondia">Gondia</option>
+                                          <option value="Gadchiroli">Gadchiroli</option>
+                                          <option value="Chandrapur">Chandrapur</option>
+                                          <option value="Yavatmal">Yavatmal</option>
+                                          <option value="Nanded">Nanded</option>
+                                          <option value="Hingoli">Hingoli</option>
+                                          <option value="Parbhani">Parbhani</option>
+                                          <option value="Jalna">Jalna</option>
+                                          <option value="Aurangabad">Aurangabad</option>
+                                          <option value="Beed">Beed</option>
+                                          <option value="Latur">Latur</option>
+                                          <option value="Osmanabad">Osmanabad</option>
+                                          <option value="Solapur North">Solapur North</option>
+                                          <option value="Ahmednagar">Ahmednagar</option>
+                                          <option value="Pune">Pune</option>
+                                          <option value="Satara">Satara</option>
+                                          <option value="Sangli">Sangli</option>
+                                          <option value="Kolhapur">Kolhapur</option> -->
+                                          
+                                        </select>
+                    </div>
+                    <div class="form-group col-md-5 multiselect">
+                      <label for="inputDistrict">Gram Panchayat</label>
+                      <select class="form-control" id="inputRegion" name="grampanchayat"  style="display: block;">
+                                          <option value="SelectState">Select Panchayat</option>
+                                          <option value="Amravati">Amravati</option>
+                                        </select>
+                                        </div>
+                    <div class="form-group col-md-5 multiselect">
+                                          <label for="inputRegion">village</label>
+                                          <select class="form-control" id="inputRegion" name="village"  style="display: block;">
+                                                              <option value="SelectState">Select Village</option>
+                                                              <option value="Adoshi">Adoshi</option>
+                                                              <option value="Botoshi">Botoshi</option>
+                                                              <option value="Shirasgaon">Shirasgaon</option>
+                                                              <option value="Pathardi">Pathardi</option>
+                                                              <option value="Kurlod">Kurlod</option>
+                                                            
+                                                            </select>
+                                                            </div>
+                    </div>
+<link rel="stylesheet" href="{% static 'static1/plugins/L.Control.Sidebar.css' %}"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+<script src="{% static 'static1/plugins/L.Control.Sidebar.js' %}"></script>
+<script src="{% static 'static1/plugins/easy-button.js' %}"></script>
 <script>
 
-var mymap = L.map('mapid').setView([19.7515-1,75.7139-1], 7.5);
+var mymap = L.map('mapid').setView([19.7515-1,75.7139-1], 4.5);
 
       L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
 		maxZoom: 18,
@@ -17,22 +97,164 @@ var mymap = L.map('mapid').setView([19.7515-1,75.7139-1], 7.5);
 		tileSize: 512,
 		zoomOffset: -1
     }).addTo(mymap);
-        var villageLayer = L.tileLayer.wms('https://geonode.communitygis.in/geoserver/geonode/wms',{
-        layers:'geonode:maha_villages_11july22',
-        format:'image/png',
-        transparent:'true',
-        cql_filter:`village_na IN('Adoshi','Shirasgaon','Botoshi','Pathardi','Kurlod')`,
-               }).addTo(mymap)
+        //   	var villageLayer = L.tileLayer.wms('https://geonode.communitygis.in/geoserver/geonode/wms',{
+        // layers:'geonode:maha_villages_11july22',
+        // format:'image/png',
+        // transparent:'true',
+        // cql_filter:`village_na IN('Adoshi','Shirasgaon','Botoshi','Pathardi','Kurlod')`,
+        //        }).addTo(mymap)
+        fetch('https://geonode.communitygis.in/geoserver/geonode/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=geonode%3Avillages&outputFormat=application%2Fjson')
+        .then(result=>result.json())
+        .then((output)=>{
+              output.features.forEach(e=>{
+                // console.log(e)
+                var village = L.geoJson(e,{
+                  onEachFeature:function(feature,layer){
+                    // layer.setStyle({
+                    //   'weight':0,
+                    //   'fillOpacity':0,
+                    // })
+                    let v=feature.properties.village
+                    layer.on({
+                      click:function(){
+                        // console.log(layer.feature.properties.village_na)
+                        // console.log('fgdfgd')
+                        // L.tileLayer.wms('https://geonode.communitygis.in/geoserver/geonode/wms',{
+                        //   layers:'geonode:hh_points_new',
+                        //   transparent:'true',
+                        //   format:'image/png',
+                        //   cql_filter:`village='${feature.properties.village_na}'`
+                          
+                        // }).addTo(mymap)
+                        fetch('https://geonode.communitygis.in/geoserver/geonode/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=geonode%3Ahh_points_new&outputFormat=application%2Fjson')
+                        .then(result=>result.json())
+                        .then((output)=>{
+                          L.geoJson(output,{
+                            filter:function(feature1){
+                              // console.log(feature1.properties.village)
+                              return feature1.properties.village==layer.feature.properties.village_na
+                            },
+                            onEachFeature:function(feature,layer){
+                              layer.bindPopup(`<div>Head of the family :${feature.properties.head_name}<br>Gender :${feature.properties.gender}<br>House Type :${feature.properties.house_type}</div>`)
+                            }, 
+                            pointToLayer:function(feature,latlng){
+                              return L.marker(latlng,{icon:greenIcon})
+                            }
+                          }).addTo(mymap) 
+                        })
+                      }
+                    })
+                    console.log('{{info}}')
+                    var bounds = layer.getBounds()
+                      var center = bounds.getCenter()
+                    '{% for i in info %}'
+                    console.log(feature.properties.village_na=='{{i.habitations}}')
 
-        var maharashtaraLayer = L.tileLayer.wms('https://geonode.communitygis.in/geoserver/geonode/wms',{
+                    if(feature.properties.village_na=='{{i.habitations}}'){
+                      
+                      marker = L.marker(center)
+                      marker.bindPopup(`<div>Village Name: {{i.habitations}}<br>Gram Panchayat: {{i.gram_panchayat}}<br>No. of Households: {{i.ward_no}}<br>No. of Schools: {{i.ward_no}}</div>`)
+                      marker.addTo(mymap)
+                    }
+                    '{% endfor %}'
+                    // var bounds = layer.getBounds()
+                    // var center = bounds.getCenter()
+                    // marker = L.marker(center).addTo(mymap)
+              
+                  }
+                }).addTo(mymap)
+                
+              })
+        })
+               var maharashtaraLayer = L.tileLayer.wms('https://geonode.communitygis.in/geoserver/geonode/wms',{
         layers:'geonode:maharashtra_final_regions',
         format:'image/png',
         transparent:'true',
         
                }).addTo(mymap)
-    var baseLayers = {
-		"Grayscale": grayscale,
-		"Streets": streets
-    };
+	var sidebar = L.control.sidebar('sidebar', {
+    position: 'left'
+});
+
+mymap.addControl(sidebar);
+// Show sidebar
+
+var ctlEasybutton = L.easyButton('fa fa-bars', function () {
+				sidebar.toggle();
+			}).addTo(mymap);
+sidebar.show();
+//Icon style
+var greenIcon = new L.Icon({
+  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41]
+});
+
+var Amravati =['choose','Akola' ,'Amravati','Buldhana','Yavatmal','Washim']
+var Aurangabad=['choose','Aurangabad','Beed','Jalna','Osmanabad' , 'Nanded', 'Latur','Parbhani' ,'Hingoli']
+var Mumbai=['choose','Mumbai City','mumbai_suburb','Thane','Palghar','Raigad', 'Ratnagiri','Sindhudurg']
+var Nagpur=['choose','Bhandara','Chandrapur','Gadchiroli','Gondia','Nagpur',' Wardha']
+var Pune=['choose','Sangli','Satara','Solapur_North', 'Kolhapur' ,'Pune']
+var Nashik=['choose','Dhule','Jalgaon','Nandurbar', 'Nashik','Ahmednagar']
+
+// var points;
+
+var wmsLayer;
+var DistrictSelected;
+var regionlayer;
+var TalukaSelected;
+var collegeLayer;
+var talukaLayer;
+var districtLayer;
+$("#inputRegion").change(function(){
+  regionlayer = $(this).val();
+  console.log(regionlayer)
+  var optionsList;
+  var htmlString = "";
+  wmsLayer = L.tileLayer.wms('https://geonode.communitygis.in/geoserver/geonode/wms', {
+           layers: 'geonode:maharashtra_final_regions',
+           format: 'image/png',
+           transparent: 'true',
+           cql_filter:`Region='${regionlayer}'`,
+         });
+         wmsLayer.addTo(mymap);
+    switch (regionlayer) {
+    case "Amravati":
+        optionsList = Amravati;
+        break;
+    case "Aurangabad":
+        optionsList = Aurangabad;
+        break;
+        case "Aurangabad":
+        optionsList = Aurangabad;
+        break;
+    case "Mumbai":
+        optionsList = Mumbai;
+        console.log('fff')
+        break;
+    case "Nagpur":
+        optionsList = Nagpur;
+        break;
+    case "Pune":
+        optionsList = Pune;
+        break;
+    case "Nashik":
+        optionsList = Nashik;
+        break;
+
+}
+for(var i = 0; i < optionsList.length; i++){
+    htmlString = htmlString+"<option value='"+ optionsList[i] +"'>"+ optionsList[i] +"</option>";
+  }
+  $("#inputDistrict").html(htmlString);
+
+});
+
+
+
+  
 </script>
 {% endblock map%}
