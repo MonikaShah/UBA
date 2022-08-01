@@ -63,12 +63,19 @@
                     </div>
 
                     <div class="form-group col-md-5 multiselect">
-                      <label for="inputDistrict">Gram Panchayat</label>
+                      <label for="inputDistrict">Taluka</label>
                       <select class="form-control" id="inputRegion" name="grampanchayat"  style="display: block;">
-                                          <option value="SelectState">Select Panchayat</option>
-                                          <option value="Amravati">Amravati</option>
+                                          <option value="SelectState">Select Taluka</option>
+                                          <option value="Amravati">a</option>
                                         </select>
-                                        </div>
+                        </div>
+                    <div class="form-group col-md-5 multiselect">
+                                          <label for="inputDistrict">Pincode</label>
+                                          <select class="form-control" id="inputRegion" name="pincode"  style="display: block;">
+                                                              <option value="SelectState">Select Pincode</option>
+                                                              <option value="">a</option>
+                                                            </select>
+                     </div>
                                         <button onclick="plot()">Plot All Villages</button>
                     <div class="form-group col-md-5 multiselect"><br>
                       
@@ -84,15 +91,51 @@
                                                             </select>
                                                             </div>
                   <div class="form-group col-md-5 multiselect"><br>
-
                     <label for="inputvillage">Toilets</label>
                     <select class="form-control" onchange="toilet(this.value)" id="inputToilet" name="village"  style="display: block;">
                                         <option value="SelectState">--Select Toilet type--</option>
                                         <option value="private">Private</option>
                                         <option value="open_defecatio">Open Defecition</option>
                                         <option value="community">Community</option>
+                                    </select>
 
-                                      </select>
+                    <label for="inputvillage">Select Village Ameneties</label>
+                    <select class="form-control" onchange="toilet(this.value)" id="inputToilet" name="village"  style="display: block;">
+                      <option value="SelectState">--Select--</option>
+                      <option value="">Poverty Status</option>
+                      <option value="">Toilet</option>
+                      <option value="">Own House</option>
+                      <option value="type_of_house">House Type</option>
+                      <option value="">Waste Collection System</option>
+                      <option value="drainage">Drainage Linked</option>
+                      <option value="piped_water">Piped Water At Home</option>
+                      <option value="">Community Water Tap</option>
+                      <option value="">Hand Pump</option>
+                      <option value="">Open Well</option>
+                      <option value="">Electricity Connection</option>
+                      <option value="">Lighting</option>
+                      <option value="">Cooking in Chullah</option>
+                      <option value="">Irrigation</option>
+                      <option value="">Shelter for Livestock</option>
+                      <option value="">Mode of Water Storage</option>
+                      <option value="">PM Jan Dhan Yojna</option>
+                      <option value="">Sukanya Sanridhi Yojna</option>
+                      <option value="">Mudra Yojna</option>
+                      <option value="">PM Jivan Jyoti Bima Yojna</option>
+                      <option value="">PM Suraksha Bima Yojna</option>
+                      <option value="">Atal Pension Yojna</option>
+                      <option value="">Kaushal Vikas Yojna</option>
+                      <option value="">Janani Suraksha Yojna</option>
+                      <option value="">Fasal Bima Yojna</option>
+                      <option value="">Soil Health Card</option>
+                      <option value="">PM Awas Yojna</option>
+
+
+
+                      
+                  </select>
+                  
+                    
                                       </div>                                        
                                                             
                     </div>
