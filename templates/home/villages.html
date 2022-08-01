@@ -58,9 +58,10 @@
                                           <option value="Satara">Satara</option>
                                           <option value="Sangli">Sangli</option>
                                           <option value="Kolhapur">Kolhapur</option> -->
-                                          
+
                                         </select>
                     </div>
+
                     <div class="form-group col-md-5 multiselect">
                       <label for="inputDistrict">Gram Panchayat</label>
                       <select class="form-control" id="inputRegion" name="grampanchayat"  style="display: block;">
@@ -68,18 +69,32 @@
                                           <option value="Amravati">Amravati</option>
                                         </select>
                                         </div>
-                    <div class="form-group col-md-5 multiselect">
-                                          <label for="inputRegion">village</label>
-                                          <select class="form-control" id="inputRegion" name="village"  style="display: block;">
+                                        <button onclick="plot()">Plot All Villages</button>
+                    <div class="form-group col-md-5 multiselect"><br>
+                      
+                                          <label for="inputvillage">Select Individual village</label>
+                                          <select class="form-control" onchange="vil(this.value)" id="inputRegion" name="village"  style="display: block;">
                                                               <option value="SelectState">Select Village</option>
                                                               <option value="Adoshi">Adoshi</option>
                                                               <option value="Botoshi">Botoshi</option>
                                                               <option value="Shirasgaon">Shirasgaon</option>
                                                               <option value="Pathardi">Pathardi</option>
                                                               <option value="Kurlod">Kurlod</option>
-                                                            
+
                                                             </select>
                                                             </div>
+                  <div class="form-group col-md-5 multiselect"><br>
+
+                    <label for="inputvillage">Toilets</label>
+                    <select class="form-control" onchange="toilet(this.value)" id="inputToilet" name="village"  style="display: block;">
+                                        <option value="SelectState">--Select Toilet type--</option>
+                                        <option value="private">Private</option>
+                                        <option value="open_defecatio">Open Defecition</option>
+                                        <option value="community">Community</option>
+
+                                      </select>
+                                      </div>                                        
+                                                            
                     </div>
 <link rel="stylesheet" href="{% static 'static1/plugins/L.Control.Sidebar.css' %}"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
@@ -88,7 +103,12 @@
 <script>
 
 var mymap = L.map('mapid').setView([19.7515-1,75.7139-1], 4.5);
-
+var village;
+var vilm;
+var villages=[];
+var markers=[];
+var sel='';
+var v;
       L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
 		maxZoom: 18,
 		attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, ' +
@@ -103,74 +123,135 @@ var mymap = L.map('mapid').setView([19.7515-1,75.7139-1], 4.5);
         // transparent:'true',
         // cql_filter:`village_na IN('Adoshi','Shirasgaon','Botoshi','Pathardi','Kurlod')`,
         //        }).addTo(mymap)
-        fetch('https://geonode.communitygis.in/geoserver/geonode/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=geonode%3Avillages&outputFormat=application%2Fjson')
-        .then(result=>result.json())
-        .then((output)=>{
-              output.features.forEach(e=>{
-                // console.log(e)
-                var village = L.geoJson(e,{
-                  onEachFeature:function(feature,layer){
-                    // layer.setStyle({
-                    //   'weight':0,
-                    //   'fillOpacity':0,
-                    // })
-                    let v=feature.properties.village
-                    layer.on({
-                      click:function(){
-                        // console.log(layer.feature.properties.village_na)
-                        // console.log('fgdfgd')
-                        // L.tileLayer.wms('https://geonode.communitygis.in/geoserver/geonode/wms',{
-                        //   layers:'geonode:hh_points_new',
-                        //   transparent:'true',
-                        //   format:'image/png',
-                        //   cql_filter:`village='${feature.properties.village_na}'`
-                          
-                        // }).addTo(mymap)
-                        fetch('https://geonode.communitygis.in/geoserver/geonode/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=geonode%3Ahh_points_new&outputFormat=application%2Fjson')
-                        .then(result=>result.json())
-                        .then((output)=>{
-                          L.geoJson(output,{
-                            filter:function(feature1){
-                              // console.log(feature1.properties.village)
-                              return feature1.properties.village==layer.feature.properties.village_na
-                            },
-                            onEachFeature:function(feature,layer){
-                              layer.bindPopup(`<div>Head of the family :${feature.properties.head_name}<br>Gender :${feature.properties.gender}<br>House Type :${feature.properties.house_type}</div>`)
-                            }, 
-                            pointToLayer:function(feature,latlng){
-                              return L.marker(latlng,{icon:greenIcon})
-                            }
-                          }).addTo(mymap) 
+        var plotted=false;
+        function plot(){
+          if(!plotted){
+
+            fetch('https://geonode.communitygis.in/geoserver/geonode/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=geonode%3Avillages&outputFormat=application%2Fjson')
+            .then(result=>result.json())
+            .then((output)=>{
+                  output.features.forEach(e=>{
+                    // console.log(e)
+                    v=e.properties.village_na
+                    village = L.geoJson(e,{
+                      onEachFeature:function(feature,layer){
+                        // layer.setStyle({
+                        //   'weight':0,
+                        //   'fillOpacity':0,
+                        // })
+                        // v.push(feature.properties.village_na)
+                        // console.log(v)
+
+                        layer.on({
+                          click:function(){
+                            // console.log(layer.feature.properties.village_na)
+                            // console.log('fgdfgd')
+                            // L.tileLayer.wms('https://geonode.communitygis.in/geoserver/geonode/wms',{
+                            //   layers:'geonode:hh_points_new',
+                            //   transparent:'true',
+                            //   format:'image/png',
+                            //   cql_filter:`village='${feature.properties.village_na}'`
+
+                            // }).addTo(mymap)
+                            fetch('https://geonode.communitygis.in/geoserver/geonode/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=geonode%3Auba_hh&outputFormat=application%2Fjson')
+                            .then(result=>result.json())
+                            .then((output)=>{
+                              vilm = L.geoJson(output,{
+                                filter:function(feature1){
+                                  // console.log(feature1.properties.village)
+                                  if(document.getElementById('inputToilet')!='SelectState' && feature1.properties.village==layer.feature.properties.village_na){
+                                    console.log(document.getElementById('inputToilet').value)
+                                  return feature1.properties.village==layer.feature.properties.village_na && feature1.properties.toilet==document.getElementById('inputToilet').value
+                                  }else{
+
+                                    return feature1.properties.village==layer.feature.properties.village_na
+                                  }
+                                },
+                                onEachFeature:function(feature,layer){
+                                  // if(document.getElementById('inputRegion')) layer.setstylek
+                                  layer.bindPopup(`<div>Head of the family :${feature.properties.head_name}<br>Gender :${feature.properties.gender}<br>House Type :${feature.properties.house_type}</div>`)
+                                  // if(document.getElementById('inputvillage')!='SelectState') layer.openPopup()
+
+                                },
+                                pointToLayer:function(feature,latlng){
+                                  if(document.getElementById('inputToilet')!='SelectState' && feature.properties.toilet==document.getElementById('inputToilet').value ){
+                                  return L.marker(latlng,{icon:redIcon})
+                                  }
+                                  else{
+                                    return L.marker(latlng,{icon:greenIcon})
+
+                                  }
+                                },
+                              })
+                              vilm.addTo(mymap)
+                              markers.push(vilm)
+                            })
+                          }
                         })
+                        // console.log('{{info}}')
+                        var bounds = layer.getBounds()
+                          var center = bounds.getCenter()
+
+                        '{% for i in info %}'
+                        console.log(feature.properties.village_na=='{{i.village}}')
+
+
+                        if(feature.properties.village_na=='{{i.village}}'){
+
+                          marker = L.marker(center)
+                          '{% for j in hh %}'
+                          if('{{ j.village }}'=='{{i.village}}'){
+                          marker.bindPopup(`<div>Village Name: {{i.village}}<br>Gram Panchayat: {{i.gram_panchayat}}<br>No. of Households: {{j.total}}<br>Population: {{j.pop}}</div>`)
+                          }
+                          '{% endfor %}'
+                          markers.push(marker)
+                          marker.addTo(mymap)
+                        }
+                        '{% endfor %}'
+                        // var bounds = layer.getBounds()
+                        // var center = bounds.getCenter()
+                        // marker = L.marker(center).addTo(mymap)
+
                       }
                     })
-                    console.log('{{info}}')
-                    var bounds = layer.getBounds()
-                      var center = bounds.getCenter()
-                    '{% for i in info %}'
-                    console.log(feature.properties.village_na=='{{i.habitations}}')
+                    village.name = v;
+                    markers.push(village)
 
-                    if(feature.properties.village_na=='{{i.habitations}}'){
-                      
-                      marker = L.marker(center)
-                      marker.bindPopup(`<div>Village Name: {{i.habitations}}<br>Gram Panchayat: {{i.gram_panchayat}}<br>No. of Households: {{i.ward_no}}<br>No. of Schools: {{i.ward_no}}</div>`)
-                      marker.addTo(mymap)
+
+                    console.log(v.indexOf('Adoshi'))
+                    // if(village._layers.feature.properties.village_na)console.log(village.layers.feature.properties.village_na);
+                    village.addTo(mymap)
+
+                  })
+                  markers.forEach(e=>{
+                    if(sel!=''){
+                      if(e.name==sel){
+                        console.log('sdfs')
+  
+                          e.setStyle({fillColor:'#00ff00'})
+                      }
                     }
-                    '{% endfor %}'
-                    // var bounds = layer.getBounds()
-                    // var center = bounds.getCenter()
-                    // marker = L.marker(center).addTo(mymap)
-              
-                  }
-                }).addTo(mymap)
-                
-              })
-        })
+                  })
+                })
+                // console.log(markers[v.indexOf('Adoshi')])
+                // markers[v.indexOf('Adoshi')].setStyle({fillColor:'#00ff00'})
+            plotted=true;
+          }else{
+            console.log(markers)
+            console.log('erase')
+            console.log(village)
+            markers.forEach(e=>{
+              mymap.removeLayer(e)
+            })
+            plotted=false;
+          }
+
+      }
                var maharashtaraLayer = L.tileLayer.wms('https://geonode.communitygis.in/geoserver/geonode/wms',{
         layers:'geonode:maharashtra_final_regions',
         format:'image/png',
         transparent:'true',
-        
+
                }).addTo(mymap)
 	var sidebar = L.control.sidebar('sidebar', {
     position: 'left'
@@ -186,6 +267,15 @@ sidebar.show();
 //Icon style
 var greenIcon = new L.Icon({
   iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41]
+});
+
+var redIcon = new L.Icon({
+  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
   iconSize: [25, 41],
   iconAnchor: [12, 41],
@@ -253,8 +343,27 @@ for(var i = 0; i < optionsList.length; i++){
 
 });
 
+function vil(val){
+  sel=val
+  if(plotted){
+    plot()
+    plotted=false;
+    plot()
+  }
+  console.log(val)
+}
 
-
+var plottedT=false;
+function toilet(val){
   
+  sel=val
+  if(plottedT){
+    plot()
+    plottedT=false;
+    plot()
+  }
+  console.log(val)
+}
+
 </script>
 {% endblock map%}
